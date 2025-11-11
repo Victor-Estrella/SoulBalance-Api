@@ -1,5 +1,6 @@
-package br.com.fiap.SoulBalance.Entity;
+package br.com.fiap.SoulBalance.entity;
 
+import br.com.fiap.SoulBalance.enun.ValorEnun;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,13 +23,16 @@ public class CheckinManualEntity {
     private Long chekinId;
 
     @Column(name = "humor")
-    private int humor; //criar um enum de 1 a 5
+    @Enumerated(EnumType.STRING)
+    private ValorEnun humor;
 
     @Column(name = "energia")
-    private int energia; //criar um enum de 1 a 5
+    @Enumerated(EnumType.STRING)
+    private ValorEnun energia;
 
     @Column(name = "foco")
-    private String foco; //criar um enum de 1 a 5
+    @Enumerated(EnumType.STRING)
+    private ValorEnun foco;
 
     @Column(name = "time")
     private LocalDateTime time;

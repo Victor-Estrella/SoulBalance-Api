@@ -1,4 +1,4 @@
-package br.com.fiap.SoulBalance.Entity;
+package br.com.fiap.SoulBalance.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

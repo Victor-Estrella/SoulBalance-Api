@@ -1,5 +1,6 @@
-package br.com.fiap.SoulBalance.Entity;
+package br.com.fiap.SoulBalance.entity;
 
+import br.com.fiap.SoulBalance.enun.TipoAtividade;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,7 +23,7 @@ public class AtividadeEntity {
     private Long atividadeId;
 
     @Column(name = "tipo_atividade")
-    private String tipoAtividade; //enum com os tipos de atividades disponíveis para o usuário
+    private TipoAtividade tipoAtividade;
 
     private Instant inicio;
 
