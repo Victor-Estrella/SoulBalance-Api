@@ -64,11 +64,11 @@ public class UsuarioService {
         return UsuarioResponseDto.from(usuarioRepository.save(usuario));
     }
 
-    public UsuarioResponseDto update(UsuarioResponseDto filter, Long idUsuario) {
+    public UsuarioResponseDto update(UsuarioRequestDto filter, Long idUsuario) {
         UsuarioEntity usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(NotFoundException.forUser(idUsuario));
 
-        usuario.setNome(filter.getNome());
+        usuario.setNome(filter.getName());
         usuario.setEmail(filter.getEmail());
         usuario.setSenha(passwordEncoder.encode(filter.getSenha()));
         usuario.setDataCriacao(LocalDateTime.now());
