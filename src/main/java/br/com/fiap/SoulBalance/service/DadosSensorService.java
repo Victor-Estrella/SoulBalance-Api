@@ -33,7 +33,7 @@ public class DadosSensorService {
      * O 'time' é gerado no servidor.
      */
     @Transactional
-    public DadosSensorResponseDto registrarDado(DadosSensorRequestDto dto, Long userId) {
+    public DadosSensorResponseDto saveDado(DadosSensorRequestDto dto, Long userId) {
         UsuarioEntity usuario = usuarioRepository.findById(userId)
                 .orElseThrow(NotFoundException.forUser(userId));
 
@@ -47,23 +47,6 @@ public class DadosSensorService {
         DadosSensorEntity savedDado = dadosSensorRepository.save(dado);
 
         return DadosSensorResponseDto.from(savedDado);
-    }
-
-    /**
-     * Retorna os dados de um tipo específico (ex: todos os registros de BATIMENTOS_MEDIOS)
-     * em um dia para um usuário.
-     */
-    public List<DadosSensorResponseDto> buscarDadosPorTipo(Long userId, TipoDadoSensor tipo, LocalDate data) {
-
-        LocalDateTime inicioDoDia = data.atStartOfDay();
-        LocalDateTime fimDoDia = data.plusDays(1).atStartOfDay().minusNanos(1);
-
-        List<DadosSensorEntity> historico = dadosSensorRepository
-                .findByUsuarioIdAndTipoDadoAndTimeBetween(userId, tipo, inicioDoDia, fimDoDia);
-
-        return historico.stream()
-                .map(DadosSensorResponseDto::from)
-                .toList();
     }
 
     /**
@@ -88,5 +71,18 @@ public class DadosSensorService {
                         DadosSensorEntity::getTipoDado,
                         Collectors.averagingInt(DadosSensorEntity::getValor)
                 ));
+    }
+
+    /**
+     * Retorna todos os registros de dados de sensor para um usuário específico,
+     * ordenados por data e hora (do mais recente para o mais antigo).
+     */
+    public List<DadosSensorResponseDto> getAll(Long userId) {
+        List<DadosSensorEntity> dadosDoUsuario = dadosSensorRepository
+                .findByUsuarioIdOrderByTimeDesc(userId);
+
+        return dadosDoUsuario.stream()
+                .map(DadosSensorResponseDto::from)
+                .toList();
     }
 }
