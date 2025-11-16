@@ -25,6 +25,9 @@ public class AtividadeEntity {
     @Column(name = "tipo_atividade")
     private TipoAtividade tipoAtividade;
 
+    @Column(name = "descricao")
+    private String descricao;
+
     private Instant inicio;
 
     private Instant fim;

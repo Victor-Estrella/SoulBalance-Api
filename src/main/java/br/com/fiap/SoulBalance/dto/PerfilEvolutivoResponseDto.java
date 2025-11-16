@@ -1,7 +1,6 @@
 package br.com.fiap.SoulBalance.dto;
 
 import br.com.fiap.SoulBalance.entity.PerfilEvolutivoEntity;
-import br.com.fiap.SoulBalance.entity.UsuarioEntity;
 import lombok.*;
 
 import java.time.LocalDateTime;
