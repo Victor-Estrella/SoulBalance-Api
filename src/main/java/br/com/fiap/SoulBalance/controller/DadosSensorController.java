@@ -26,12 +26,12 @@ public class DadosSensorController {
 
     @PostMapping
     public ResponseEntity<DadosSensorResponseDto> saveDado(
-            @RequestBody @Valid DadosSensorRequestDto dto,
+            @RequestBody @Valid DadosSensorRequestDto filter,
             @AuthenticationPrincipal UsuarioEntity usuarioLogado) {
 
-        DadosSensorResponseDto novoDado = dadosSensorService.saveDado(dto, usuarioLogado.getUserId());
+        DadosSensorResponseDto dadosSensorResponseDto = dadosSensorService.saveDado(filter, usuarioLogado.getUserId());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoDado);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dadosSensorResponseDto);
     }
 
     @GetMapping()

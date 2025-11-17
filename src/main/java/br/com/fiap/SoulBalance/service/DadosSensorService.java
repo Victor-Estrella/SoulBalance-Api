@@ -33,13 +33,13 @@ public class DadosSensorService {
      * O 'time' é gerado no servidor.
      */
     @Transactional
-    public DadosSensorResponseDto saveDado(DadosSensorRequestDto dto, Long userId) {
+    public DadosSensorResponseDto saveDado(DadosSensorRequestDto filter, Long userId) {
         UsuarioEntity usuario = usuarioRepository.findById(userId)
                 .orElseThrow(NotFoundException.forUser(userId));
 
         DadosSensorEntity dado = DadosSensorEntity.builder()
-                .tipoDado(dto.getTipoDadoSensor())
-                .valor(dto.getValor())
+                .tipoDado(filter.getTipoDadoSensor())
+                .valor(filter.getValor())
                 .time(LocalDateTime.now())
                 .usuario(usuario)
                 .build();
