@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -46,4 +47,12 @@ public class CheckinManualController {
 
         return ResponseEntity.ok(chekinList);
     }
+
+    @DeleteMapping("/users/{userId}/chekins")
+    public ResponseEntity<Void> deleteChekins(@PathVariable Long userId, @PathVariable LocalDateTime since) {
+        checkinManualService.deleteUserChekin(userId, since);
+
+        return ResponseEntity.noContent().build();
+    }
+
 }

@@ -2,7 +2,7 @@ package br.com.fiap.SoulBalance.enun;
 
 public enum ValorEnun {
 
-    MUTIO_BAIXO(1, "Muito Baixo"),
+    MUITO_BAIXO(1, "Muito Baixo"),
     BAIXO(2, "Baixo"),
     MEDIO(3, "Médio"),
     ALTO(4, "Alto"),

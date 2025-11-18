@@ -63,6 +63,15 @@ public class CheckinManualService {
                 .toList();
     }
 
+    public int deleteUserChekin(Long userId, LocalDateTime since) {
+        usuarioRepository.findById(userId)
+                .orElseThrow(NotFoundException.forUser(userId));
+
+        return checkinManualRepository.deleteByUsuarioIdAndPeriod(userId, since);
+    }
+
+
+
 //    /**
 //     * CRUCIAL: Após salvar o check-in, este método é chamado para notificar
 //     * o AnaliseDiariaIAService para que ele comece a processar os dados do dia.

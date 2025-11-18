@@ -4,7 +4,6 @@ import br.com.fiap.SoulBalance.dto.UsuarioRequestDto;
 import br.com.fiap.SoulBalance.dto.UsuarioResponseDto;
 import br.com.fiap.SoulBalance.entity.UsuarioEntity;
 import br.com.fiap.SoulBalance.exception.NotFoundException;
-import br.com.fiap.SoulBalance.repository.PerfilEvolutivoRepository;
 import br.com.fiap.SoulBalance.repository.UsuarioRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

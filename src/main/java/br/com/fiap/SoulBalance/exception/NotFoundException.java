@@ -17,5 +17,9 @@ public class NotFoundException extends RuntimeException{
         return () -> new NotFoundException("Usuario não encontrado" + email);
     }
 
+    public static Supplier<NotFoundException> forDadoSensor(Long id) {
+        return () -> new NotFoundException("Id do dado sensorial não encontrado" + id);
+    }
+
 
 }

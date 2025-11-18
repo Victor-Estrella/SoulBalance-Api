@@ -55,4 +55,10 @@ public class DadosSensorController {
 
         return ResponseEntity.ok(agregados);
     }
+
+    @DeleteMapping("/{idDadoSensor}")
+    public void delete(Long idDadoSensor) {
+        dadosSensorService.delete(idDadoSensor);
+    }
+
 }

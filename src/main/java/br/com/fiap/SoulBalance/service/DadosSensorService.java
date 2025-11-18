@@ -85,4 +85,11 @@ public class DadosSensorService {
                 .map(DadosSensorResponseDto::from)
                 .toList();
     }
+
+    public void delete(Long dadoSensorId) {
+        DadosSensorEntity dadosSensor = dadosSensorRepository.findById(dadoSensorId)
+                .orElseThrow(NotFoundException.forDadoSensor(dadoSensorId));
+
+        dadosSensorRepository.delete(dadosSensor);
+    }
 }
