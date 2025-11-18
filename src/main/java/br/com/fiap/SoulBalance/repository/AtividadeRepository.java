@@ -10,10 +10,6 @@ import java.util.List;
 @Repository
 public interface AtividadeRepository extends JpaRepository<AtividadeEntity, Long> {
 
-    List<AtividadeEntity> findByUsuarioIdAndHoraInicioBetween(
-            Long usuarioId,
-            LocalDateTime inicio,
-            LocalDateTime fim
-    );
+    List<AtividadeEntity> findByUsuarioIdAndInicioBetween(Long usuarioId, LocalDateTime inicio, LocalDateTime fim);
 
 }

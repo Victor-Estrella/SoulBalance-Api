@@ -22,7 +22,7 @@ public class UsuarioResponseDto {
     public static UsuarioResponseDto from(UsuarioEntity usuario) {
         return UsuarioResponseDto
                 .builder()
-                .userId(usuario.getUserId())
+                .userId(usuario.getId())
                 .nome(usuario.getNome())
                 .email(usuario.getEmail())
                 .senha(usuario.getSenha())

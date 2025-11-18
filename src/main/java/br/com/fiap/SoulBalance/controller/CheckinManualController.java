@@ -29,7 +29,7 @@ public class CheckinManualController {
             @RequestBody @Valid CheckinManualRequestDto filter,
             @AuthenticationPrincipal UsuarioEntity usuarioLogado) {
 
-        CheckinManualResponseDto checkinManualResponseDto = checkinManualService.saveChekin(filter, usuarioLogado.getUserId());
+        CheckinManualResponseDto checkinManualResponseDto = checkinManualService.saveChekin(filter, usuarioLogado.getId());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(checkinManualResponseDto);
     }
@@ -37,7 +37,7 @@ public class CheckinManualController {
     @GetMapping("/historico")
     public ResponseEntity<List<CheckinManualResponseDto>> getAllByUsuario(@AuthenticationPrincipal UsuarioEntity usuarioLogado) {
 
-        List<CheckinManualResponseDto> historico = checkinManualService.getAllByUsuario(usuarioLogado.getUserId());
+        List<CheckinManualResponseDto> historico = checkinManualService.getAllByUsuario(usuarioLogado.getId());
 
         return ResponseEntity.ok(historico);
     }

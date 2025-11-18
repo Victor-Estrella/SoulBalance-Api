@@ -31,7 +31,7 @@ public class DadosSensorController {
             @RequestBody @Valid DadosSensorRequestDto filter,
             @AuthenticationPrincipal UsuarioEntity usuarioLogado) {
 
-        DadosSensorResponseDto dadosSensorResponseDto = dadosSensorService.saveDado(filter, usuarioLogado.getUserId());
+        DadosSensorResponseDto dadosSensorResponseDto = dadosSensorService.saveDado(filter, usuarioLogado.getId());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(dadosSensorResponseDto);
     }
@@ -40,7 +40,7 @@ public class DadosSensorController {
     public ResponseEntity<List<DadosSensorResponseDto>> getAllByUsuario(
             @AuthenticationPrincipal UsuarioEntity usuarioLogado) {
 
-        List<DadosSensorResponseDto> dados = dadosSensorService.getAll(usuarioLogado.getUserId());
+        List<DadosSensorResponseDto> dados = dadosSensorService.getAll(usuarioLogado.getId());
 
         return ResponseEntity.ok(dados);
     }
@@ -51,7 +51,7 @@ public class DadosSensorController {
             @RequestParam("data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data) {
 
         Map<TipoDadoSensor, Double> agregados = dadosSensorService.agregarDadosDiarios(
-                usuarioLogado.getUserId(),
+                usuarioLogado.getId(),
                 data
         );
 

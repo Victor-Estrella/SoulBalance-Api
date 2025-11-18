@@ -55,7 +55,7 @@ public class AtividadeService {
     @Cacheable(value = "historicoAtividades", key = "{#userId, #inicio, #fim}")
     public List<AtividadeResponseDto> buscarHistoricoPorPeriodo(Long userId, LocalDateTime inicio, LocalDateTime fim) {
         return atividadeRepository
-                .findByUsuarioIdAndHoraInicioBetween(userId, inicio, fim)
+                .findByUsuarioIdAndInicioBetween(userId, inicio, fim)
                 .stream()
                 .map(AtividadeResponseDto::from)
                 .toList();
@@ -67,7 +67,7 @@ public class AtividadeService {
     @Cacheable(value = "historicoAtividadesEntity", key = "{#userId, #inicio, #fim}")
     public List<AtividadeEntity> buscarHistoricoPorPeriodoEntity(Long userId, LocalDateTime inicio, LocalDateTime fim) {
         return atividadeRepository
-                .findByUsuarioIdAndHoraInicioBetween(userId, inicio, fim);
+                .findByUsuarioIdAndInicioBetween(userId, inicio, fim);
     }
 
     public List<AtividadeResponseDto> getAll() {

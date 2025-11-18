@@ -31,7 +31,7 @@ public class AnaliseDiariaIAResponseDto {
                 .fadigaScoreCalculado(entity.getFadigaScoreCalculado())
                 .estresseScoreCalculado(entity.getEstresseScoreCalculado())
                 .dataCriacao(entity.getDataCriacao())
-                .usuarioId(entity.getUsuario().getUserId())
+                .usuarioId(entity.getUsuario().getId())
                 .build();
     }
 }

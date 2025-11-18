@@ -26,7 +26,7 @@ public class DadosSensorResponseDto {
                 .tipoDado(dadosSensor.getTipoDado())
                 .valor(dadosSensor.getValor())
                 .time(dadosSensor.getTime())
-                .usuarioId(dadosSensor.getUsuario().getUserId())
+                .usuarioId(dadosSensor.getUsuario().getId())
                 .build();
     }
 

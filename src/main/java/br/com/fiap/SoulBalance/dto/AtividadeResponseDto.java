@@ -33,7 +33,7 @@ public class AtividadeResponseDto {
                 .inicio(atividade.getInicio())
                 .fim(atividade.getFim())
                 .duracaoMinutosAtividade(atividade.getDuracaoMinutosAtividade())
-                .usuarioId(atividade.getUsuario().getUserId())
+                .usuarioId(atividade.getUsuario().getId())
                 .build();
     }
 

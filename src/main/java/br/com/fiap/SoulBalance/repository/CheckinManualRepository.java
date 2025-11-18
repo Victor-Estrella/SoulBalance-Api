@@ -14,13 +14,13 @@ import java.util.List;
 @Repository
 public interface CheckinManualRepository extends JpaRepository<CheckinManualEntity, Long> {
 
-    List<CheckinManualEntity> findByUsuario(
+    List<CheckinManualEntity> findByUsuarioId(
             Long usuarioId
     );
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM CheckinManualEntity c WHERE c.usuario.userId = :userId " +
+    @Query("DELETE FROM CheckinManualEntity c WHERE c.usuario.id = :userId " +
             "AND (:since IS NULL OR c.time >= :since)")
     int deleteByUsuarioIdAndPeriod(
             @Param("userId") Long userId,

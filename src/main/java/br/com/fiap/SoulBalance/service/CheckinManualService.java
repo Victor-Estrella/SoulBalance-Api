@@ -55,7 +55,7 @@ public class CheckinManualService {
     @Cacheable(value = "historicoCheckin", key = "#userId")
     public List<CheckinManualResponseDto> getAllByUsuario(Long userId) {
 
-        List<CheckinManualEntity> historico = checkinManualRepository.findByUsuario(userId);
+        List<CheckinManualEntity> historico = checkinManualRepository.findByUsuarioId(userId);
 
         return historico.stream()
                 .map(CheckinManualResponseDto::from)
