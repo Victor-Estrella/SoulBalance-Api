@@ -8,6 +8,8 @@ import br.com.fiap.SoulBalance.exception.NotFoundException;
 import br.com.fiap.SoulBalance.repository.AtividadeRepository;
 import br.com.fiap.SoulBalance.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,7 @@ public class AtividadeService {
      * Salva uma nova atividade (trabalho, descanso, lazer) para o usuário logado.
      */
     @Transactional
+    @CacheEvict(value = "historicoAtividades", key = "#userId", allEntries = false)
     public AtividadeResponseDto saveAtividade(AtividadeRequestDto filter, Long userId) {
         UsuarioEntity usuario = usuarioRepository.findById(userId)
                 .orElseThrow(NotFoundException.forUser(userId));
@@ -49,6 +52,7 @@ public class AtividadeService {
      * Retorna o histórico de atividades (como DTO) dentro de um período.
      * Essencial para construir o dashboard e relatórios.
      */
+    @Cacheable(value = "historicoAtividades", key = "{#userId, #inicio, #fim}")
     public List<AtividadeResponseDto> buscarHistoricoPorPeriodo(Long userId, LocalDateTime inicio, LocalDateTime fim) {
         return atividadeRepository
                 .findByUsuarioIdAndHoraInicioBetween(userId, inicio, fim)
@@ -60,6 +64,7 @@ public class AtividadeService {
     /**
      * Método auxiliar para retornar entidades, usado internamente pelo RecomendacaoIAService.
      */
+    @Cacheable(value = "historicoAtividadesEntity", key = "{#userId, #inicio, #fim}")
     public List<AtividadeEntity> buscarHistoricoPorPeriodoEntity(Long userId, LocalDateTime inicio, LocalDateTime fim) {
         return atividadeRepository
                 .findByUsuarioIdAndHoraInicioBetween(userId, inicio, fim);

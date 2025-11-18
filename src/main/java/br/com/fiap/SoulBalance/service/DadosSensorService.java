@@ -9,6 +9,7 @@ import br.com.fiap.SoulBalance.exception.NotFoundException;
 import br.com.fiap.SoulBalance.repository.DadosSensorRepository;
 import br.com.fiap.SoulBalance.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -56,6 +57,7 @@ public class DadosSensorService {
      * para gerar um único valor diário (média/total) para uso na análise da IA.
      * Retorna um mapa de TipoDadoSensor para o valor agregado (ex: Média de BPM ou Total de Passos).
      */
+    @Cacheable(value = "dadosAgregados", key = "{#userId, #data}")
     public Map<TipoDadoSensor, Double> agregarDadosDiarios(Long userId, LocalDate data) {
 
         LocalDateTime inicioDoDia = data.atStartOfDay();
@@ -79,6 +81,7 @@ public class DadosSensorService {
      * Retorna todos os registros de dados de sensor para um usuário específico,
      * ordenados por data e hora (do mais recente para o mais antigo).
      */
+    @Cacheable(value = "dadosSensorUsuarioLista", key = "#userId")
     public List<DadosSensorResponseDto> getAll(Long userId) {
         List<DadosSensorEntity> dadosDoUsuario = dadosSensorRepository
                 .findByUsuarioIdOrderByTimeDesc(userId);

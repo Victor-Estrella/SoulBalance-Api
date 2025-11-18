@@ -8,6 +8,8 @@ import br.com.fiap.SoulBalance.exception.NotFoundException;
 import br.com.fiap.SoulBalance.repository.CheckinManualRepository;
 import br.com.fiap.SoulBalance.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,7 @@ public class CheckinManualService {
      * Salva o humor, energia e foco do usuário logado e dispara a análise da IA.
      */
     @Transactional
+    @CacheEvict(value = "historicoCheckin", key = "#userId")
     public CheckinManualResponseDto saveChekin(CheckinManualRequestDto filter, Long userId) {
         UsuarioEntity usuario = usuarioRepository.findById(userId)
                 .orElseThrow(NotFoundException.forUser(userId));
@@ -49,6 +52,7 @@ public class CheckinManualService {
     /**
      * Retorna todos os check-ins de um dia específico para um usuário.
      */
+    @Cacheable(value = "historicoCheckin", key = "#userId")
     public List<CheckinManualResponseDto> getAllByUsuario(Long userId) {
 
         List<CheckinManualEntity> historico = checkinManualRepository.findByUsuario(userId);
@@ -70,6 +74,7 @@ public class CheckinManualService {
                 .map(CheckinManualResponseDto::from);
     }
 
+    @CacheEvict(value = "historicoCheckin", key = "#userId")
     public int deleteUserChekin(Long userId, LocalDateTime since) {
         usuarioRepository.findById(userId)
                 .orElseThrow(NotFoundException.forUser(userId));

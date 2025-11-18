@@ -7,6 +7,9 @@ import br.com.fiap.SoulBalance.exception.NotFoundException;
 import br.com.fiap.SoulBalance.repository.UsuarioRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,6 +35,7 @@ public class UsuarioService {
                 .toList();
     }
 
+    @Cacheable(value = "usuarios", key = "#idUsuario")
     public UsuarioResponseDto getById(Long idUsuario) {
         UsuarioEntity usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(NotFoundException.forUser(idUsuario));
@@ -39,6 +43,7 @@ public class UsuarioService {
         return UsuarioResponseDto.from(usuario);
     }
 
+    @CacheEvict(value = "usuarios", key = "#idUsuario")
     public void delete(@Valid Long idUsuario) {
         UsuarioEntity usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(NotFoundException.forUser(idUsuario));
@@ -46,6 +51,7 @@ public class UsuarioService {
         usuarioRepository.delete(usuario);
     }
 
+    @CachePut(value = "usuarios", key = "#result.userId")
     public UsuarioResponseDto save(UsuarioRequestDto filter){
         UsuarioEntity usuario = UsuarioEntity
                 .builder()
@@ -58,6 +64,7 @@ public class UsuarioService {
         return UsuarioResponseDto.from(usuarioRepository.save(usuario));
     }
 
+    @CachePut(value = "usuarios", key = "#idUsuario")
     public UsuarioResponseDto update(UsuarioRequestDto filter, Long idUsuario) {
         UsuarioEntity usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(NotFoundException.forUser(idUsuario));
