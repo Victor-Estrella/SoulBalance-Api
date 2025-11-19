@@ -20,6 +20,7 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
+    @GetMapping()
     public ResponseEntity<List<UsuarioResponseDto>> getAll() {
 
         List<UsuarioResponseDto> usuarioList = usuarioService.getlAll();

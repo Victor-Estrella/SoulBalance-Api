@@ -53,7 +53,7 @@ public class UsuarioServiceTest {
         when(passwordEncoder.encode(RAW_PASSWORD)).thenReturn(ENCODED_PASSWORD);
 
         UsuarioEntity usuarioSaved = UsuarioEntity.builder()
-                .userId(1L)
+                .id(1L)
                 .nome("Sofia Petruk")
                 .email("soso@email.com")
                 .senha(ENCODED_PASSWORD)
@@ -73,6 +73,6 @@ public class UsuarioServiceTest {
         assertEquals(requestDto.getEmail(), entitySaved.getEmail(), "O email deve ser o mesmo do Request DTO.");
 
         assertNotNull(result, "O resultado não deve ser nulo.");
-        assertEquals(usuarioSaved.getUserId(), result.getUserId(), "O ID do usuário salvo deve ser retornado.");
+        assertEquals(usuarioSaved.getId(), result.getUserId(), "O ID do usuário salvo deve ser retornado.");
     }
 }
