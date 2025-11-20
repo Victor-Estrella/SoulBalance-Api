@@ -6,6 +6,8 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+import java.util.List;
+
 @Entity
 @Table(name = "TB_SOULBALANCE_USUARIO")
 @SequenceGenerator(name = "usuario", sequenceName = "SQ_TB_SOULBALANCE_USUARIO", allocationSize = 1)
@@ -33,5 +35,21 @@ public class UsuarioEntity {
 
     @Column(name = "data_criacao")
     private LocalDateTime dataCriacao;
+
+    // Relacionamentos para exclusão em cascata
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<AnaliseDiariaIAEntity> analisesDiarias;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<AtividadeEntity> atividades;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<CheckinManualEntity> checkinsManuais;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<DadosSensorEntity> dadosSensores;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<RecomendacaoEntity> recomendacoes;
 
 }

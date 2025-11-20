@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "TB_SOULBALANCE_RECOMENDACAO")
 @SequenceGenerator(name = "recomendacoes", sequenceName = "SQ_TB_SOULBALANCE_RECOMENDACAO", allocationSize = 1)
@@ -29,6 +31,7 @@ public class RecomendacaoEntity {
 
     @ManyToOne
     @JoinColumn(name = "fk_id_usuario")
+    @JsonIgnore
     private UsuarioEntity usuario;
 
 }

@@ -88,5 +88,6 @@ public class UsuarioService {
         return usuarioRepository.findAll(request)
                 .map(UsuarioResponseDto::from);
     }
+    
 
 }

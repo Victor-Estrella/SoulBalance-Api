@@ -15,14 +15,12 @@ import java.time.LocalDateTime;
 @Builder
 public class AtividadeRequestDto {
 
-    @NotBlank
+	@NotNull
     private TipoAtividade tipoAtividade;
 
-    @NotNull
-    private LocalDateTime inicio;
 
-    @NotNull
-    private LocalDateTime fim;
+    // Não enviar datas, backend define início/fim
+    private Integer durationMinutes;
 
     @NotBlank
     private String descricao;

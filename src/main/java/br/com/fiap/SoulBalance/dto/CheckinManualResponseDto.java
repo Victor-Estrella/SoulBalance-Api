@@ -6,6 +6,7 @@ import br.com.fiap.SoulBalance.enun.ValorEnun;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,10 +23,10 @@ public class CheckinManualResponseDto {
 
     private ValorEnun foco;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     private LocalDateTime time;
 
-    private UsuarioEntity usuario;
-
+    private Long usuarioId;
 
     public static CheckinManualResponseDto from(CheckinManualEntity checkinManual) {
         return CheckinManualResponseDto
@@ -35,10 +36,8 @@ public class CheckinManualResponseDto {
                 .energia(checkinManual.getEnergia())
                 .foco(checkinManual.getFoco())
                 .time(checkinManual.getTime())
-//                .usuario(checkinManual.getUsuario().getNome())
-                .usuario(checkinManual.getUsuario())
+                .usuarioId(checkinManual.getUsuario() != null ? checkinManual.getUsuario().getId() : null)
                 .build();
     }
-
 
 }

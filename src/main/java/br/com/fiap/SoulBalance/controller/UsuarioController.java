@@ -28,6 +28,13 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioList);
     }
 
+    // Endpoint para buscar usuário por email
+    @GetMapping("/email")
+    public ResponseEntity<UsuarioResponseDto> getByEmail(@RequestParam String email) {
+        UsuarioResponseDto usuario = usuarioService.findByEmail(email);
+        return ResponseEntity.ok(usuario);
+    }
+
     @GetMapping("/{idUsuario}")
     public ResponseEntity<UsuarioResponseDto> getById(@PathVariable Long idUsuario) {
         UsuarioResponseDto usuario = usuarioService.getById(idUsuario);

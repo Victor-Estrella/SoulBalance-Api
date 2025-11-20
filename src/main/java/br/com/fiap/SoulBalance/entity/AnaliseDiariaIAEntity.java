@@ -6,6 +6,8 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "TB_SOULBALANCE_ANALISE_IA")
 @SequenceGenerator(name = "analise_ia", sequenceName = "SQ_TB_SOULBALANCE_ANALISE_IA", allocationSize = 1)
@@ -25,7 +27,7 @@ public class AnaliseDiariaIAEntity {
     @Column(name = "data_referencia", nullable = false, unique = true)
     private LocalDate dataReferencia;
 
-    @Column(name = "resumo_narrativo_ia", columnDefinition = "TEXT")
+    @Column(name = "resumo_narrativo_ia")
     private String resumoNarrativoIA;
 
     @Column(name = "alerta_urgente")
@@ -42,5 +44,6 @@ public class AnaliseDiariaIAEntity {
 
     @ManyToOne
     @JoinColumn(name = "fk_id_usuario", nullable = false)
+    @JsonIgnore
     private UsuarioEntity usuario;
 }

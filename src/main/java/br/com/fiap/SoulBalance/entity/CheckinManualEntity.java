@@ -1,10 +1,12 @@
-package br.com.fiap.SoulBalance.entity;
+    package br.com.fiap.SoulBalance.entity;
 
 import br.com.fiap.SoulBalance.enun.ValorEnun;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "TB_SOULBALANCE_CHEKIN_MANUAL")
@@ -39,5 +41,6 @@ public class CheckinManualEntity {
 
     @ManyToOne
     @JoinColumn(name = "fk_id_usuario")
+    @JsonIgnore
     private UsuarioEntity usuario;
 }

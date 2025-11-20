@@ -7,6 +7,8 @@ import lombok.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "TB_SOULBALANCE_ATIVIDADE")
 @SequenceGenerator(name = "atividades", sequenceName = "SQ_TB_SOULBALANCE_ATIVIDADES", allocationSize = 1)
@@ -23,6 +25,7 @@ public class AtividadeEntity {
     @Column(name = "atividade_id")
     private Long atividadeId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "tipo_atividade")
     private TipoAtividade tipoAtividade;
 
@@ -38,5 +41,6 @@ public class AtividadeEntity {
 
     @ManyToOne
     @JoinColumn(name = "fk_id_usuario")
+    @JsonIgnore
     private UsuarioEntity usuario;
 }

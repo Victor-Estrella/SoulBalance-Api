@@ -6,6 +6,8 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "TB_SOULBALANCE_DADOS_SENSOR")
 @SequenceGenerator(name = "dados", sequenceName = "SQ_TB_SOULBALANCE_DADOS_SENSOR", allocationSize = 1)
@@ -34,5 +36,6 @@ public class DadosSensorEntity {
 
     @ManyToOne
     @JoinColumn(name = "fk_id_usuario")
+    @JsonIgnore
     private UsuarioEntity usuario;
 }

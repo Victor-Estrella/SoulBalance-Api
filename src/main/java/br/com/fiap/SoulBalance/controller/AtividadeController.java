@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
@@ -22,22 +23,21 @@ public class AtividadeController {
     private AtividadeService atividadeService;
 
 
-    @PostMapping("/users/{userId}/atividades")
-    public ResponseEntity<AtividadeResponseDto> saveAtividade(
-            @PathVariable Long userId,
-            @RequestBody @Valid AtividadeRequestDto atividadeRequestDto) {
 
-        AtividadeResponseDto response = atividadeService.saveAtividade(atividadeRequestDto, userId);
+    @PostMapping("/atividades")
+    public ResponseEntity<AtividadeResponseDto> saveAtividade(
+            @RequestBody @Valid AtividadeRequestDto atividadeRequestDto,
+            @AuthenticationPrincipal br.com.fiap.SoulBalance.entity.UsuarioEntity usuarioLogado) {
+        AtividadeResponseDto response = atividadeService.saveAtividade(atividadeRequestDto, usuarioLogado.getId());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping("/users/{userId}/atividades/historico")
+    @GetMapping("/atividades/historico")
     public ResponseEntity<List<AtividadeResponseDto>> buscarHistoricoPorPeriodo(
-            @PathVariable Long userId,
-            @RequestParam LocalDateTime inicio,
-            @RequestParam LocalDateTime fim) {
-
-        List<AtividadeResponseDto> historico = atividadeService.buscarHistoricoPorPeriodo(userId, inicio, fim);
+            @RequestParam @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
+            @RequestParam @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) LocalDateTime fim,
+            @AuthenticationPrincipal br.com.fiap.SoulBalance.entity.UsuarioEntity usuarioLogado) {
+        List<AtividadeResponseDto> historico = atividadeService.buscarHistoricoPorPeriodo(inicio, fim, usuarioLogado.getId());
         return ResponseEntity.ok(historico);
     }
 
