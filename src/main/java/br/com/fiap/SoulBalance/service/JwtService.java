@@ -26,12 +26,13 @@ public class JwtService {
 	}
 	
 	public String extractUsername(String token) {
-	    return Jwts.parserBuilder()
-	            .setSigningKey(KEY)
-	            .build()
-	            .parseClaimsJws(token)
-	            .getBody()
-	            .getSubject();
+		return Jwts.parserBuilder()
+				.setSigningKey(KEY)
+				.setAllowedClockSkewSeconds(300) // permite até 5 minutos de diferença
+				.build()
+				.parseClaimsJws(token)
+				.getBody()
+				.getSubject();
 	}
 	
 	public boolean isTokenValid(String token, UsuarioEntity usuario) {
@@ -40,13 +41,14 @@ public class JwtService {
 	}
 
 	private boolean isTokenExpired(String token) {
-	    final Date expiration = Jwts.parserBuilder()
-	            .setSigningKey(KEY)
-	            .build()
-	            .parseClaimsJws(token)
-	            .getBody()
-	            .getExpiration();
-	    return expiration.before(new Date());
+		final Date expiration = Jwts.parserBuilder()
+				.setSigningKey(KEY)
+				.setAllowedClockSkewSeconds(300) // permite até 5 minutos de diferença
+				.build()
+				.parseClaimsJws(token)
+				.getBody()
+				.getExpiration();
+		return expiration.before(new Date());
 	}
 
 }
