@@ -4,10 +4,7 @@ import br.com.fiap.SoulBalance.enun.TipoAtividade;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "TB_SOULBALANCE_ATIVIDADE")
@@ -21,11 +18,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class AtividadeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "atividades")
+    @SequenceGenerator(name = "atividades", sequenceName = "SQ_TB_SOULBALANCE_ATIVIDADES", allocationSize = 1)
     @Column(name = "atividade_id")
     private Long atividadeId;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "tipo_atividade")
     private TipoAtividade tipoAtividade;
 
@@ -36,11 +33,10 @@ public class AtividadeEntity {
 
     private LocalDateTime fim;
 
-    @Column(name = "duracao_minutos_atividade")   //criar um método nessa classe que faz a duração do inicio e fim da atividade
+    @Column(name = "duracao_minutos_atividade")
     private Long duracaoMinutosAtividade;
 
     @ManyToOne
     @JoinColumn(name = "fk_id_usuario")
-    @JsonIgnore
     private UsuarioEntity usuario;
 }

@@ -3,10 +3,9 @@ package br.com.fiap.SoulBalance.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
-
-import java.util.List;
 
 @Entity
 @Table(name = "TB_SOULBALANCE_USUARIO")
@@ -20,7 +19,8 @@ import java.util.List;
 public class UsuarioEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usuario")
+    @SequenceGenerator(name = "usuario", sequenceName = "SQ_TB_SOULBALANCE_USUARIO", allocationSize = 1)
     @Column(name = "user_id")
     private Long id;
 
@@ -33,23 +33,8 @@ public class UsuarioEntity {
     @Column(name = "senha")
     private String senha;
 
+    @CreatedDate
     @Column(name = "data_criacao")
     private LocalDateTime dataCriacao;
-
-    // Relacionamentos para exclusão em cascata
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<AnaliseDiariaIAEntity> analisesDiarias;
-
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<AtividadeEntity> atividades;
-
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<CheckinManualEntity> checkinsManuais;
-
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<DadosSensorEntity> dadosSensores;
-
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<RecomendacaoEntity> recomendacoes;
 
 }

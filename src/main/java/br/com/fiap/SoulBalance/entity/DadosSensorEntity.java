@@ -6,8 +6,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
 @Table(name = "TB_SOULBALANCE_DADOS_SENSOR")
 @SequenceGenerator(name = "dados", sequenceName = "SQ_TB_SOULBALANCE_DADOS_SENSOR", allocationSize = 1)
@@ -20,7 +18,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class DadosSensorEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "dados")
+    @SequenceGenerator(name = "dados", sequenceName = "SQ_TB_SOULBALANCE_DADOS_SENSOR", allocationSize = 1)
     @Column(name = "dado_id")
     private Long dadoId;
 
@@ -29,13 +28,12 @@ public class DadosSensorEntity {
     private TipoDadoSensor tipoDado;
 
     @Column(name = "valor")
-    private int valor; //pontuação desses dados
+    private int valor;
 
     @Column(name = "time")
     private LocalDateTime time;
 
     @ManyToOne
     @JoinColumn(name = "fk_id_usuario")
-    @JsonIgnore
     private UsuarioEntity usuario;
 }

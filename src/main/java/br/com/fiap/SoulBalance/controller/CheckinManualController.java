@@ -2,59 +2,69 @@ package br.com.fiap.SoulBalance.controller;
 
 import br.com.fiap.SoulBalance.dto.CheckinManualRequestDto;
 import br.com.fiap.SoulBalance.dto.CheckinManualResponseDto;
-import br.com.fiap.SoulBalance.entity.UsuarioEntity;
 import br.com.fiap.SoulBalance.service.CheckinManualService;
-import jakarta.validation.Valid;
+import br.com.fiap.SoulBalance.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 
 @RestController
 @RequestMapping("checkin-manual")
-public class CheckinManualController {
+public class CheckinManualController implements CheckinManualApi {
 
     @Autowired
     private CheckinManualService checkinManualService;
 
-    @PostMapping
-    public ResponseEntity<CheckinManualResponseDto> saveChekin(
-            @RequestBody @Valid CheckinManualRequestDto filter,
-            @AuthenticationPrincipal UsuarioEntity usuarioLogado) {
+    @Autowired
+    private UsuarioService usuarioService;
 
-        CheckinManualResponseDto checkinManualResponseDto = checkinManualService.saveChekin(filter, usuarioLogado.getId());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(checkinManualResponseDto);
+    @Override
+    public ResponseEntity<CheckinManualResponseDto> saveChekin(CheckinManualRequestDto filter) {
+        try {
+            CheckinManualResponseDto response = checkinManualService.saveChekin(filter);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (Exception e) {
+            throw new org.springframework.web.server.ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 
-    @GetMapping("/historico")
-    public ResponseEntity<List<CheckinManualResponseDto>> getAllByUsuario(@AuthenticationPrincipal UsuarioEntity usuarioLogado) {
+    @Override
+    public ResponseEntity<CheckinManualResponseDto> updateChekin(CheckinManualRequestDto filter, Long userId, Long chekinId) {
+        try {
+            // Supondo que exista um método updateChekin na service, se não existir, será necessário implementar
+            CheckinManualResponseDto response = checkinManualService.updateChekin(filter, userId, chekinId);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            throw new org.springframework.web.server.ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
 
-        List<CheckinManualResponseDto> historico = checkinManualService.getAllByUsuario(usuarioLogado.getId());
-
+    @Override
+    public ResponseEntity<List<CheckinManualResponseDto>> getAllByUsuario(Long idUsuario) {
+        List<CheckinManualResponseDto> historico = checkinManualService.getAllByUsuario(idUsuario);
         return ResponseEntity.ok(historico);
     }
 
-    @GetMapping()
+    @Override
     public ResponseEntity<List<CheckinManualResponseDto>> getAll() {
-
         List<CheckinManualResponseDto> chekinList = checkinManualService.getAll();
-
         return ResponseEntity.ok(chekinList);
     }
 
-    @DeleteMapping("/users/{userId}/chekins")
-    public ResponseEntity<Void> deleteChekins(@PathVariable Long userId, @PathVariable LocalDateTime since) {
-        checkinManualService.deleteUserChekin(userId, since);
-
-        return ResponseEntity.noContent().build();
+    @Override
+    public ResponseEntity<Void> deleteChekins(Long userId, Long chekinId) {
+        try {
+            checkinManualService.deleteUserChekin(userId, chekinId);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            throw new org.springframework.web.server.ResponseStatusException(HttpStatus.NOT_FOUND, "ID não encontrado");
+        }
     }
 
     @GetMapping("/paginacao")

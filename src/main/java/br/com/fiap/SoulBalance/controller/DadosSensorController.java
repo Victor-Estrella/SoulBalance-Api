@@ -2,65 +2,57 @@ package br.com.fiap.SoulBalance.controller;
 
 import br.com.fiap.SoulBalance.dto.DadosSensorRequestDto;
 import br.com.fiap.SoulBalance.dto.DadosSensorResponseDto;
-import br.com.fiap.SoulBalance.entity.UsuarioEntity;
-import br.com.fiap.SoulBalance.enun.TipoDadoSensor;
 import br.com.fiap.SoulBalance.service.DadosSensorService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("dados-sensor")
-public class DadosSensorController {
+public class DadosSensorController implements DadosSensorApi {
 
     @Autowired
     private DadosSensorService dadosSensorService;
 
-    @PostMapping
-    public ResponseEntity<DadosSensorResponseDto> saveDado(
-            @RequestBody @Valid DadosSensorRequestDto filter,
-            @AuthenticationPrincipal UsuarioEntity usuarioLogado) {
-
-        DadosSensorResponseDto dadosSensorResponseDto = dadosSensorService.saveDado(filter, usuarioLogado.getId());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(dadosSensorResponseDto);
+    @Override
+    public ResponseEntity<DadosSensorResponseDto> saveDado(DadosSensorRequestDto filter) {
+        try {
+            DadosSensorResponseDto response = dadosSensorService.saveDado(filter);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (Exception e) {
+            throw new org.springframework.web.server.ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 
-    @GetMapping()
-    public ResponseEntity<List<DadosSensorResponseDto>> getAllByUsuario(
-            @AuthenticationPrincipal UsuarioEntity usuarioLogado) {
+    @Override
+    public ResponseEntity<DadosSensorResponseDto> updateDado(DadosSensorRequestDto filter, Long idDadoSensor) {
+        try {
+            DadosSensorResponseDto response = dadosSensorService.updateDado(filter, idDadoSensor);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            throw new org.springframework.web.server.ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
 
-        List<DadosSensorResponseDto> dados = dadosSensorService.getAll(usuarioLogado.getId());
-
+    @Override
+    public ResponseEntity<List<DadosSensorResponseDto>> getAllByUsuario() {
+        List<DadosSensorResponseDto> dados = dadosSensorService.getAll();
         return ResponseEntity.ok(dados);
     }
 
-    @GetMapping("/agregados")
-    public ResponseEntity<Map<TipoDadoSensor, Double>> agregarDadosDiarios(
-            @AuthenticationPrincipal UsuarioEntity usuarioLogado,
-            @RequestParam("data") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data) {
-
-        Map<TipoDadoSensor, Double> agregados = dadosSensorService.agregarDadosDiarios(
-                usuarioLogado.getId(),
-                data
-        );
-
-        return ResponseEntity.ok(agregados);
-    }
-
-    @DeleteMapping("/{idDadoSensor}")
-    public void delete(Long idDadoSensor) {
-        dadosSensorService.delete(idDadoSensor);
+    @Override
+    public ResponseEntity<Void> delete(Long idDadoSensor) {
+        try {
+            dadosSensorService.delete(idDadoSensor);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            throw new org.springframework.web.server.ResponseStatusException(HttpStatus.NOT_FOUND, "ID não encontrado");
+        }
     }
 
     @GetMapping("/paginacao")

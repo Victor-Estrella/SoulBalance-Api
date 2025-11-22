@@ -1,12 +1,11 @@
 package br.com.fiap.SoulBalance.dto;
 
 import br.com.fiap.SoulBalance.entity.CheckinManualEntity;
-import br.com.fiap.SoulBalance.entity.UsuarioEntity;
 import br.com.fiap.SoulBalance.enun.ValorEnun;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,10 +22,11 @@ public class CheckinManualResponseDto {
 
     private ValorEnun foco;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime time;
 
-    private Long usuarioId;
+    private String usuario;
+
 
     public static CheckinManualResponseDto from(CheckinManualEntity checkinManual) {
         return CheckinManualResponseDto
@@ -36,8 +36,9 @@ public class CheckinManualResponseDto {
                 .energia(checkinManual.getEnergia())
                 .foco(checkinManual.getFoco())
                 .time(checkinManual.getTime())
-                .usuarioId(checkinManual.getUsuario() != null ? checkinManual.getUsuario().getId() : null)
+                .usuario(checkinManual.getUsuario().getEmail())
                 .build();
     }
+
 
 }

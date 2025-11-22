@@ -4,7 +4,6 @@ import br.com.fiap.SoulBalance.dto.DadosSensorRequestDto;
 import br.com.fiap.SoulBalance.dto.DadosSensorResponseDto;
 import br.com.fiap.SoulBalance.entity.DadosSensorEntity;
 import br.com.fiap.SoulBalance.entity.UsuarioEntity;
-import br.com.fiap.SoulBalance.enun.TipoDadoSensor;
 import br.com.fiap.SoulBalance.exception.NotFoundException;
 import br.com.fiap.SoulBalance.repository.DadosSensorRepository;
 import br.com.fiap.SoulBalance.repository.UsuarioRepository;
@@ -15,10 +14,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,9 +33,8 @@ public class DadosSensorService {
      * O 'time' é gerado no servidor.
      */
     @Transactional
-    public DadosSensorResponseDto saveDado(DadosSensorRequestDto filter, Long userId) {
-        UsuarioEntity usuario = usuarioRepository.findById(userId)
-                .orElseThrow(NotFoundException.forUser(userId));
+    public DadosSensorResponseDto saveDado(DadosSensorRequestDto filter) {
+        UsuarioEntity usuario = validarUsuario(filter.getEmail());
 
         DadosSensorEntity dado = DadosSensorEntity.builder()
                 .tipoDado(filter.getTipoDadoSensor())
@@ -53,42 +49,17 @@ public class DadosSensorService {
     }
 
     /**
-     * Combina múltiplos registros de sensor (ex: várias leituras de BPM ao longo do dia)
-     * para gerar um único valor diário (média/total) para uso na análise da IA.
-     * Retorna um mapa de TipoDadoSensor para o valor agregado (ex: Média de BPM ou Total de Passos).
-     */
-    @Cacheable(value = "dadosAgregados", key = "{#userId, #data}")
-    public Map<TipoDadoSensor, Double> agregarDadosDiarios(Long userId, LocalDate data) {
-
-        LocalDateTime inicioDoDia = data.atStartOfDay();
-        LocalDateTime fimDoDia = data.plusDays(1).atStartOfDay().minusNanos(1);
-
-        List<DadosSensorEntity> dadosDoDia = dadosSensorRepository
-                .findByUsuarioIdAndTimeBetween(userId, inicioDoDia, fimDoDia);
-
-        if (dadosDoDia.isEmpty()) {
-            return Map.of();
-        }
-
-        return dadosDoDia.stream()
-                .collect(Collectors.groupingBy(
-                        DadosSensorEntity::getTipoDado,
-                        Collectors.averagingInt(DadosSensorEntity::getValor)
-                ));
-    }
-
-    /**
      * Retorna todos os registros de dados de sensor para um usuário específico,
      * ordenados por data e hora (do mais recente para o mais antigo).
      */
-    @Cacheable(value = "dadosSensorUsuarioLista", key = "#userId")
-    public List<DadosSensorResponseDto> getAll(Long userId) {
-        List<DadosSensorEntity> dadosDoUsuario = dadosSensorRepository
-                .findByUsuarioIdOrderByTimeDesc(userId);
+    @Cacheable(value = "dadosSensorUsuarioLista")
+    public List<DadosSensorResponseDto> getAll() {
+
+        List<DadosSensorEntity> dadosDoUsuario = dadosSensorRepository.findAll();
 
         return dadosDoUsuario.stream()
                 .map(DadosSensorResponseDto::from)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public Page<DadosSensorResponseDto> findAllPage(PageRequest request) {
@@ -98,8 +69,29 @@ public class DadosSensorService {
 
     public void delete(Long dadoSensorId) {
         DadosSensorEntity dadosSensor = dadosSensorRepository.findById(dadoSensorId)
+
                 .orElseThrow(NotFoundException.forDadoSensor(dadoSensorId));
 
         dadosSensorRepository.delete(dadosSensor);
+    }
+
+    @Transactional
+    public DadosSensorResponseDto updateDado(DadosSensorRequestDto filter, Long idDadoSensor) {
+        DadosSensorEntity dado = dadosSensorRepository.findById(idDadoSensor)
+                .orElseThrow(NotFoundException.forDadoSensor(idDadoSensor));
+
+        UsuarioEntity usuario = validarUsuario(filter.getEmail());
+        dado.setTipoDado(filter.getTipoDadoSensor());
+        dado.setValor(filter.getValor());
+        dado.setUsuario(usuario);
+        // Não atualiza o time para manter o registro original
+
+        DadosSensorEntity updated = dadosSensorRepository.save(dado);
+        return DadosSensorResponseDto.from(updated);
+    }
+
+    private UsuarioEntity validarUsuario(String email) {
+        return usuarioRepository.findByEmail(email)
+                .orElseThrow(NotFoundException.forEmail(email));
     }
 }

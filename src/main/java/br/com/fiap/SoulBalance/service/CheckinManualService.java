@@ -31,10 +31,9 @@ public class CheckinManualService {
      * Salva o humor, energia e foco do usuário logado e dispara a análise da IA.
      */
     @Transactional
-    @CacheEvict(value = "historicoCheckin", key = "#userId")
-    public CheckinManualResponseDto saveChekin(CheckinManualRequestDto filter, Long userId) {
-        UsuarioEntity usuario = usuarioRepository.findById(userId)
-                .orElseThrow(NotFoundException.forUser(userId));
+    @CacheEvict(value = "saveCheckin")
+    public CheckinManualResponseDto saveChekin(CheckinManualRequestDto filter) {
+        UsuarioEntity usuario = validarUsuario(filter.getEmail());
 
         CheckinManualEntity checkin = CheckinManualEntity.builder()
                 .humor(filter.getHumor())
@@ -74,27 +73,40 @@ public class CheckinManualService {
                 .map(CheckinManualResponseDto::from);
     }
 
-    @CacheEvict(value = "historicoCheckin", key = "#userId")
-    public int deleteUserChekin(Long userId, LocalDateTime since) {
+    @CacheEvict(value = "historicoCheckin")
+    public int deleteUserChekin(Long userId, Long chekinId) {
         usuarioRepository.findById(userId)
                 .orElseThrow(NotFoundException.forUser(userId));
 
-        return checkinManualRepository.deleteByUsuarioIdAndPeriod(userId, since);
+        checkinManualRepository.findById(chekinId)
+                .orElseThrow(NotFoundException.forChekin(chekinId));
+
+        return checkinManualRepository.deleteByUsuarioIdAndChekinId(userId, chekinId);
     }
 
+        @Transactional
+        @CacheEvict(value = "historicoCheckin")
+        public CheckinManualResponseDto updateChekin(CheckinManualRequestDto filter, Long userId, Long chekinId) {
+        UsuarioEntity usuario = usuarioRepository.findById(userId)
+            .orElseThrow(NotFoundException.forUser(userId));
+
+        CheckinManualEntity checkin = checkinManualRepository.findById(chekinId)
+            .orElseThrow(NotFoundException.forChekin(chekinId));
+
+        checkin.setHumor(filter.getHumor());
+        checkin.setEnergia(filter.getEnergia());
+        checkin.setFoco(filter.getFoco());
+        checkin.setUsuario(usuario);
+        // Não atualiza o time para manter o registro original
+
+        CheckinManualEntity updated = checkinManualRepository.save(checkin);
+        return CheckinManualResponseDto.from(updated);
+        }
 
 
-//    /**
-//     * CRUCIAL: Após salvar o check-in, este método é chamado para notificar
-//     * o AnaliseDiariaIAService para que ele comece a processar os dados do dia.
-//     * @param userId ID do usuário.
-//     * @param checkin Entidade Check-in recém-salva.
-//     */
-//    public void dispararAnaliseIA(Long userId, CheckinManualEntity checkin) {
-//
-//        // Chama o método no AnaliseDiariaIAService para iniciar o fluxo da IA
-//        analiseDiariaIAService.processarNovoCheckin(userId, checkin);
-//
-//        System.out.println("Análise IA disparada para o usuário: " + userId + " após Check-in.");
-//    }
+    private UsuarioEntity validarUsuario(String email) {
+        return usuarioRepository.findByEmail(email)
+                .orElseThrow(NotFoundException.forEmail(email));
+    }
+
 }

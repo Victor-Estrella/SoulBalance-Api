@@ -3,68 +3,67 @@ package br.com.fiap.SoulBalance.controller;
 import br.com.fiap.SoulBalance.dto.UsuarioRequestDto;
 import br.com.fiap.SoulBalance.dto.UsuarioResponseDto;
 import br.com.fiap.SoulBalance.service.UsuarioService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/usuarios")
-public class UsuarioController {
+public class UsuarioController implements UsuarioApi {
 
     @Autowired
     private UsuarioService usuarioService;
 
-    @GetMapping()
+    @Override
     public ResponseEntity<List<UsuarioResponseDto>> getAll() {
-
         List<UsuarioResponseDto> usuarioList = usuarioService.getlAll();
-
         return ResponseEntity.ok(usuarioList);
     }
 
-    // Endpoint para buscar usuário por email
-    @GetMapping("/email")
-    public ResponseEntity<UsuarioResponseDto> getByEmail(@RequestParam String email) {
-        UsuarioResponseDto usuario = usuarioService.findByEmail(email);
-        return ResponseEntity.ok(usuario);
+    @Override
+    public ResponseEntity<UsuarioResponseDto> getById(Long idUsuario) {
+        try {
+            UsuarioResponseDto usuario = usuarioService.getById(idUsuario);
+            return ResponseEntity.ok(usuario);
+        } catch (Exception e) {
+            throw new org.springframework.web.server.ResponseStatusException(HttpStatus.NOT_FOUND, "ID não encontrado");
+        }
     }
 
-    @GetMapping("/{idUsuario}")
-    public ResponseEntity<UsuarioResponseDto> getById(@PathVariable Long idUsuario) {
-        UsuarioResponseDto usuario = usuarioService.getById(idUsuario);
-
-        return  ResponseEntity.ok(usuario);
-
+    @Override
+    public ResponseEntity<UsuarioResponseDto> save(UsuarioRequestDto filter) throws Exception {
+        try {
+            UsuarioResponseDto response = usuarioService.save(filter);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 
-    @PostMapping
-    public ResponseEntity<UsuarioResponseDto> save(@RequestBody @Valid UsuarioRequestDto filter) {
-        UsuarioResponseDto novoUsuario = usuarioService.save(filter);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
+    @Override
+    public ResponseEntity<UsuarioResponseDto> update(UsuarioRequestDto filter, Long idUsuario) {
+        try {
+            UsuarioResponseDto response = usuarioService.update(filter, idUsuario);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 
-    @PutMapping("/{idUsuario}")
-    public ResponseEntity<UsuarioResponseDto> update(
-            @RequestBody @Valid UsuarioRequestDto filter,
-            @PathVariable Long idUsuario) {
-
-        UsuarioResponseDto usuarioAtualizado = usuarioService.update(filter, idUsuario);
-
-        return ResponseEntity.ok(usuarioAtualizado);
-    }
-
-    @DeleteMapping("/{idUsuario}")
-    public ResponseEntity<Void> delete(@PathVariable Long idUsuario) {
-        usuarioService.delete(idUsuario);
-
-        return ResponseEntity.noContent().build();
+    @Override
+    public ResponseEntity<Void> delete(Long idUsuario) {
+        try {
+            usuarioService.delete(idUsuario);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            throw new org.springframework.web.server.ResponseStatusException(HttpStatus.NOT_FOUND, "ID não encontrado");
+        }
     }
 
     @GetMapping("/paginacao")

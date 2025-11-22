@@ -1,13 +1,9 @@
 package br.com.fiap.SoulBalance.dto;
 
 import br.com.fiap.SoulBalance.entity.AtividadeEntity;
-import br.com.fiap.SoulBalance.entity.UsuarioEntity;
 import br.com.fiap.SoulBalance.enun.TipoAtividade;
 import lombok.*;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,12 +15,7 @@ public class AtividadeResponseDto {
 
     private TipoAtividade tipoAtividade;
 
-
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
-    private LocalDateTime inicio;
-
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
-    private LocalDateTime fim;
+    private String descricao;
 
     private Long duracaoMinutosAtividade;
 
@@ -34,9 +25,8 @@ public class AtividadeResponseDto {
         return AtividadeResponseDto
                 .builder()
                 .atividadeId(atividade.getAtividadeId())
-                .tipoAtividade(atividade.getTipoAtividade() != null ? atividade.getTipoAtividade() : TipoAtividade.DESCANSO_PASSIVO)
-                .inicio(atividade.getInicio())
-                .fim(atividade.getFim())
+                .tipoAtividade(atividade.getTipoAtividade())
+                .descricao(atividade.getDescricao())
                 .duracaoMinutosAtividade(atividade.getDuracaoMinutosAtividade())
                 .usuarioId(atividade.getUsuario().getId())
                 .build();

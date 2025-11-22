@@ -5,8 +5,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
 @Table(name = "TB_SOULBALANCE_RECOMENDACAO")
 @SequenceGenerator(name = "recomendacoes", sequenceName = "SQ_TB_SOULBALANCE_RECOMENDACAO", allocationSize = 1)
@@ -19,7 +17,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class RecomendacaoEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "recomendacoes")
+    @SequenceGenerator(name = "recomendacoes", sequenceName = "SQ_TB_SOULBALANCE_RECOMENDACAO", allocationSize = 1)
     @Column(name = "recomendacao_id")
     private Long recomendacaoId;
 
@@ -31,7 +30,6 @@ public class RecomendacaoEntity {
 
     @ManyToOne
     @JoinColumn(name = "fk_id_usuario")
-    @JsonIgnore
     private UsuarioEntity usuario;
 
 }
