@@ -17,6 +17,17 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class UsuarioEntity {
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<AtividadeEntity> atividades;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<CheckinManualEntity> checkinsManuais;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<DadosSensorEntity> dadosSensores;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<RecomendacaoEntity> recomendacoes;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usuario")

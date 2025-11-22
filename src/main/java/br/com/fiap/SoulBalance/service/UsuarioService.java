@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +25,18 @@ public class UsuarioService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+        @Autowired
+        private br.com.fiap.SoulBalance.repository.AtividadeRepository atividadeRepository;
+
+        @Autowired
+        private br.com.fiap.SoulBalance.repository.CheckinManualRepository checkinManualRepository;
+
+        @Autowired
+        private br.com.fiap.SoulBalance.repository.DadosSensorRepository dadosSensorRepository;
+
+        @Autowired
+        private br.com.fiap.SoulBalance.repository.RecomendacaoRepository recomendacaoRepository;
 
 
     public List<UsuarioResponseDto> getlAll() {
@@ -45,8 +56,29 @@ public class UsuarioService {
     @CacheEvict(value = "usuarios", key = "#idUsuario")
     public void delete(@Valid Long idUsuario) {
         UsuarioEntity usuario = usuarioRepository.findById(idUsuario)
-                .orElseThrow(NotFoundException.forUser(idUsuario));
+            .orElseThrow(NotFoundException.forUser(idUsuario));
 
+        // Excluir atividades relacionadas
+        var atividades = atividadeRepository.findByUsuarioId(idUsuario);
+        atividadeRepository.deleteAll(atividades);
+
+        // Excluir check-ins manuais relacionados
+        var checkins = checkinManualRepository.findByUsuarioId(idUsuario);
+        checkinManualRepository.deleteAll(checkins);
+
+        // Excluir dados de sensores relacionados
+        var dadosSensores = dadosSensorRepository.findAll().stream()
+            .filter(ds -> ds.getUsuario().getId().equals(idUsuario))
+            .toList();
+        dadosSensorRepository.deleteAll(dadosSensores);
+
+        // Excluir recomendações relacionadas
+        var recomendacoes = recomendacaoRepository.findAll().stream()
+            .filter(r -> r.getUsuario().getId().equals(idUsuario))
+            .toList();
+        recomendacaoRepository.deleteAll(recomendacoes);
+
+        // Por fim, excluir o usuário
         usuarioRepository.delete(usuario);
     }
 
