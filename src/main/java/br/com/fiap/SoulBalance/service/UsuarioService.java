@@ -35,7 +35,6 @@ public class UsuarioService {
                 .toList();
     }
 
-    @Cacheable(value = "usuarios", key = "#idUsuario")
     public UsuarioResponseDto getById(Long idUsuario) {
         UsuarioEntity usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(NotFoundException.forUser(idUsuario));
@@ -69,7 +68,6 @@ public class UsuarioService {
         return UsuarioResponseDto.from(usuarioRepository.save(usuario));
     }
 
-    @CachePut(value = "usuarios", key = "#idUsuario")
     public UsuarioResponseDto update(UsuarioRequestDto filter, Long idUsuario) {
         UsuarioEntity usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(NotFoundException.forUser(idUsuario));
