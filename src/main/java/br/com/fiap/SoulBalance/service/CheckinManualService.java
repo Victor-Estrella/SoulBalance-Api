@@ -51,7 +51,6 @@ public class CheckinManualService {
     /**
      * Retorna todos os check-ins de um dia específico para um usuário.
      */
-    @Cacheable(value = "historicoCheckin", key = "#userId")
     public List<CheckinManualResponseDto> getAllByUsuario(Long userId) {
 
         List<CheckinManualEntity> historico = checkinManualRepository.findByUsuarioId(userId);

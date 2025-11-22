@@ -30,6 +30,7 @@ public interface CheckinManualApi {
         @ApiResponse(responseCode = "404", description = "Check-in não encontrado")
     })
     @PutMapping("/users/{userId}/{chekinId}")
+    
     ResponseEntity<CheckinManualResponseDto> updateChekin(@RequestBody CheckinManualRequestDto filter, @PathVariable Long userId, @PathVariable Long chekinId);
     @Operation(summary = "Listar histórico de check-ins", description = "Retorna o histórico de check-ins manuais de um usuário.")
     @ApiResponse(responseCode = "200", description = "Histórico retornado com sucesso")
