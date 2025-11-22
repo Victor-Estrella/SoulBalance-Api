@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/email")
 public class EmailController implements EmailApi {
 
     @Autowired

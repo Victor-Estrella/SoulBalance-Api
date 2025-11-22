@@ -15,7 +15,6 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("checkin-manual")
 public class CheckinManualController implements CheckinManualApi {
 
     @Autowired

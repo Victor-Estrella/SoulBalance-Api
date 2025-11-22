@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("dados-sensor")
 public class DadosSensorController implements DadosSensorApi {
 
     @Autowired

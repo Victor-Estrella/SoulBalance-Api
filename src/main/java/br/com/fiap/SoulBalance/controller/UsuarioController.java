@@ -14,8 +14,16 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/usuarios")
 public class UsuarioController implements UsuarioApi {
+    @GetMapping("/email")
+    public ResponseEntity<Long> getIdByEmail(@RequestParam("email") String email) {
+        try {
+            UsuarioResponseDto usuario = usuarioService.findByEmail(email);
+            return ResponseEntity.ok(usuario.getUserId());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado para o e-mail informado");
+        }
+    }
 
     @Autowired
     private UsuarioService usuarioService;

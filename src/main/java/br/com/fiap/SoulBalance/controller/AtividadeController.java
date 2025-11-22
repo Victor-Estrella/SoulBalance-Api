@@ -16,7 +16,6 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/atividade")
 public class AtividadeController implements AtividadeApi {
 
     @Autowired
