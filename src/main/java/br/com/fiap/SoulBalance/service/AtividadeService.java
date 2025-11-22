@@ -21,6 +21,12 @@ import java.util.List;
 
 @Service
 public class AtividadeService {
+    public List<AtividadeResponseDto> getAllByUsuario(Long userId) {
+        List<AtividadeEntity> atividades = atividadeRepository.findByUsuarioId(userId);
+        return atividades.stream()
+                .map(AtividadeResponseDto::from)
+                .toList();
+    }
 
     @Autowired
     private AtividadeRepository atividadeRepository;
@@ -55,7 +61,6 @@ public class AtividadeService {
      * Retorna o histórico de atividades (como DTO) dentro de um período.
      * Essencial para construir o dashboard e relatórios.
      */
-    public AtividadeResponseDto buscarHistoricoPorPeriodo(Long userId, Long atividadeId) {
     @Transactional
     public void deleteUserAtividade(Long userId, Long atividadeId) {
     usuarioRepository.findById(userId)
@@ -65,6 +70,7 @@ public class AtividadeService {
     atividadeRepository.delete(atividade);
     }
 
+    public AtividadeResponseDto buscarHistoricoPorPeriodo(Long userId, Long atividadeId) {
         AtividadeEntity atividade = atividadeRepository
                 .findByUsuarioIdAndAtividadeId(userId, atividadeId)
                 .orElseThrow(() -> new NotFoundException("Atividade não encontrada para o usuário e ID especificados."));
