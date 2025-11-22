@@ -55,8 +55,15 @@ public class AtividadeService {
      * Retorna o histórico de atividades (como DTO) dentro de um período.
      * Essencial para construir o dashboard e relatórios.
      */
-    @Cacheable(value = "historicoAtividades", key = "{#userId, #atividadeId}")
     public AtividadeResponseDto buscarHistoricoPorPeriodo(Long userId, Long atividadeId) {
+    @Transactional
+    public void deleteUserAtividade(Long userId, Long atividadeId) {
+    usuarioRepository.findById(userId)
+        .orElseThrow(() -> new NotFoundException("Usuário não encontrado."));
+    AtividadeEntity atividade = atividadeRepository.findByUsuarioIdAndAtividadeId(userId, atividadeId)
+        .orElseThrow(() -> new NotFoundException("Atividade não encontrada para o usuário e ID especificados."));
+    atividadeRepository.delete(atividade);
+    }
 
         AtividadeEntity atividade = atividadeRepository
                 .findByUsuarioIdAndAtividadeId(userId, atividadeId)

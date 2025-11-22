@@ -32,10 +32,16 @@ public interface AtividadeApi {
     })
     @PutMapping("/{atividadeId}")
     ResponseEntity<AtividadeResponseDto> updateAtividade(@RequestBody AtividadeRequestDto atividadeRequestDto, @PathVariable Long atividadeId);
-    @Operation(summary = "Buscar histórico de atividade", description = "Retorna o histórico de uma atividade específica de um usuário.")
+    
+    @Operation(summary = "Buscar histórico de atividades do usuário", description = "Retorna o histórico de atividades de um usuário.")
     @ApiResponse(responseCode = "200", description = "Histórico retornado com sucesso")
-    @GetMapping("/users/{userId}/{atividadeId}/historico")
-    ResponseEntity<AtividadeResponseDto> buscarHistoricoPorPeriodo(@PathVariable Long userId, @PathVariable Long atividadeId);
+    @GetMapping("/atividade/historico/{idUsuario}")
+    ResponseEntity<List<AtividadeResponseDto>> getHistoricoByUsuario(@PathVariable Long idUsuario);
+    
+    @Operation(summary = "Excluir atividade do usuário", description = "Exclui uma atividade específica de um usuário.")
+    @ApiResponse(responseCode = "204", description = "Atividade excluída com sucesso")
+    @DeleteMapping("/atividade/users/{userId}/{atividadeId}/atividades")
+    ResponseEntity<Void> deleteUserAtividade(@PathVariable Long userId, @PathVariable Long atividadeId);
 
     @Operation(summary = "Listar atividades", description = "Retorna todas as atividades cadastradas.")
     @ApiResponse(responseCode = "200", description = "Lista de atividades retornada com sucesso")

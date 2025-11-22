@@ -38,13 +38,9 @@ public class AtividadeController implements AtividadeApi {
         }
     }
 
-    @GetMapping("/users/{userId}/{atividadeId}/historico")
-    public ResponseEntity<AtividadeResponseDto> buscarHistoricoPorPeriodo(
-            @PathVariable Long userId, @PathVariable Long atividadeId) {
-        AtividadeResponseDto historico = atividadeService.buscarHistoricoPorPeriodo(userId, atividadeId);
-        if (historico == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Atividade não encontrada");
-        }
+    @Override
+    public ResponseEntity<List<AtividadeResponseDto>> getHistoricoByUsuario(@PathVariable Long idUsuario) {
+        List<AtividadeResponseDto> historico = atividadeService.getAllByUsuario(idUsuario);
         return ResponseEntity.ok(historico);
     }
 
@@ -52,6 +48,16 @@ public class AtividadeController implements AtividadeApi {
     public ResponseEntity<List<AtividadeResponseDto>> getAll() {
         List<AtividadeResponseDto> atividades = atividadeService.getAll();
         return ResponseEntity.ok(atividades);
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteUserAtividade(@PathVariable Long userId, @PathVariable Long atividadeId) {
+        try {
+            atividadeService.deleteUserAtividade(userId, atividadeId);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 
     @GetMapping("/paginacao")
